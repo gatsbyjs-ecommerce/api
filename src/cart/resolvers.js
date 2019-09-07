@@ -2,7 +2,8 @@ import Stripe from 'stripe';
 import async from 'async';
 import { first } from 'lodash';
 
-import { getEntry, getEntries, createEntry } from '../utils/contentful';
+import sanity from '../utils/sanity';
+// import { getEntry, getEntries, createEntry } from '../utils/contentful';
 
 import config from '../utils/config';
 
@@ -14,12 +15,13 @@ export default {
     createOrder: async (parent, args) => {
       // get products
       const totalCost = await new Promise(resolve => {
-        let total = 0;
+        const total = 0;
         async.each(
           args.productIds,
           async (productId, callback) => {
-            const product = await getEntry(productId);
-            total += product.discountPrice;
+            // TODO:
+            // const product = await getEntry(productId);
+            // total += product.discountPrice;
             callback();
           },
           () => {
@@ -61,11 +63,15 @@ export default {
 
       delete args.tokenId;
       delete args.productIds;
-      const order = await createEntry(args, 'order');
+      // TODO:
+      // const order = await createEntry(args, 'order');
+      const order = {};
       return order;
     },
     validateCoupon: async (parent, args) => {
-      const coupons = await getEntries('coupons', { 'fields.code': args.code });
+      // TODO:
+      // const coupons = await getEntries('coupons', { 'fields.code': args.code });
+      const coupons = [];
       const coupon = first(coupons);
       if (!coupon) {
         throw new Error('Invalid coupon.');

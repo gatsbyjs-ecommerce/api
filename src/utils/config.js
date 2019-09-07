@@ -53,18 +53,24 @@ const conf = convict({
       default: '',
     },
   },
-  contentful: {
-    spaceId: {
-      doc: 'Contentful Space ID.',
+  sanity: {
+    projectId: {
+      doc: 'Sanity Project ID.',
       format: String,
       default: '',
-      env: 'CONTENTFUL_SPACE_ID',
+      env: 'SANITY_PROJECT_ID',
     },
-    managementAccessToken: {
-      doc: 'Contentful management access token.',
+    token: {
+      doc: 'Sanity token.',
       format: String,
       default: '',
-      env: 'CONTENTFUL_MANAGEMENT_ACCESS_TOKEN',
+      env: 'SANITY_TOKEN',
+    },
+    dataset: {
+      doc: 'Sanity dataset.',
+      format: String,
+      default: '',
+      env: 'SANITY_DATASET',
     },
   },
   mailchimp: {
