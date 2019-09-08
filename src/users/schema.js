@@ -11,14 +11,43 @@ const typeDefs = gql`
     success: Boolean
   }
 
+  type Address {
+    addressLine1: String!
+    addressLine2: String
+    city: String!
+    state: String!
+    postcode: String!
+    country: String
+    telephone: String!
+  }
+
   type User {
-    id: ID! # "!" denotes a required field
+    id: ID!
     email: String
     status: UserStatus
+    fullName: String
+    address: Address
   }
+
   type JwtUser {
     jwt: String
     user: User
+  }
+
+  input AddressInput {
+    addressLine1: String!
+    addressLine2: String
+    city: String!
+    state: String!
+    postcode: String!
+    country: String
+    telephone: String
+  }
+
+  input UserInput {
+    email: String!
+    fullName: String!
+    address: AddressInput
   }
 
   input RegisterInput {

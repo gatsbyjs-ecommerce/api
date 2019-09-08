@@ -35,23 +35,27 @@ const typeDefs = gql`
     expiryDate: String
   }
 
+  type CardToken {
+    id: ID!
+  }
+
+  input VerifyCardInput {
+    cardNumber: String!
+    expMonth: String!
+    expYear: String!
+    cvc: String!
+  }
+
   input OrderInput {
     tokenId: String!
     orderId: String!
-    productIds: [String]!
-    # customerCountry: String!
-    # customerName: String!
-    # customerAddress1: String!
-    # customerAddress2: String
-    # customerCity: String!
-    # customerState: String!
-    # customerPostcode: String!
-    # customerEmail: String!
-    # customerTelephone: String!
-    # customerNotes: String
+    productIds: [String!]!
+    customer: UserInput!
+    customerNotes: String
   }
 
   type Mutation {
+    verifyCard(input: VerifyCardInput!): CardToken
     createOrder(input: OrderInput!): Order
     validateCoupon(code: String!): Coupon
   }
