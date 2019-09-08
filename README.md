@@ -6,7 +6,7 @@
 ```bash
 - Node >=v10.16.0
 - NPM >=v6.9.0
-- MongoDB
+- Sanity.io
 ```
 
 #### Features
@@ -22,13 +22,13 @@
 
 ```bash
   # clone the repository
-  λ git clone https://github.com/perminder-klair/kickoff-apollo-server
+  git clone https://github.com/gatsbyjs-ecommerce/api
   # change the current directory
-  λ cd kickoff-apollo-server
+  cd api
   # install all dependencies
-  λ yarn install
+  yarn install
   # run the project
-  λ yarn dev
+  yarn dev
 ```
 
 ### Scripts
