@@ -10,18 +10,10 @@ const typeDefs = gql`
 
   type Order {
     id: ID!
-    product: Product
-    orderId: String
+    product: [Product!]!
+    orderId: String!
     createTime: String
-    customerCountry: String
-    customerName: String
-    customerAddress1: String
-    customerAddress2: String
-    customerCity: String
-    customerState: String
-    customerPostcode: String
-    customerEmail: String
-    customerTelephone: String
+    customer: User!
     customerNotes: String
   }
 
@@ -52,6 +44,10 @@ const typeDefs = gql`
     productIds: [String!]!
     customer: UserInput!
     customerNotes: String
+  }
+
+  type Query {
+    order(orderId: String!): Order
   }
 
   type Mutation {

@@ -1,4 +1,4 @@
-import { isEmpty, head } from 'lodash';
+import { isEmpty } from 'lodash';
 import randomstring from 'randomstring';
 
 import { generateToken, hashPassword, comparePassword } from '../utils/auth';
@@ -22,11 +22,10 @@ export default {
       const { email, password } = args.input;
 
       // check if user already exists
-      const users = await sanity.fetch(
-        '*[_type == "customer" && email == $email] {email, password}',
+      let user = await sanity.fetch(
+        '*[_type == "customer" && email == $email][0] {"id": _id, ...}',
         { email: email.toLowerCase() },
       );
-      let user = head(users);
 
       if (user) {
         throw new Error('E-mail already registered.');
@@ -63,11 +62,10 @@ export default {
       const { email, password } = args.input;
 
       // check if user  exists
-      const users = await sanity.fetch(
-        '*[_type == "customer" && email == $email] {_id, email, password}',
+      const user = await sanity.fetch(
+        '*[_type == "customer" && email == $email][0] {"id": _id, ...}',
         { email: email.toLowerCase() },
       );
-      const user = head(users);
 
       if (!user) {
         throw new Error('Invalid username or password.');

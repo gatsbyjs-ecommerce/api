@@ -1,6 +1,5 @@
 import Stripe from 'stripe';
 import async from 'async';
-import { first } from 'lodash';
 
 import sanity from '../utils/sanity';
 
@@ -9,6 +8,16 @@ import config from '../utils/config';
 const stripe = new Stripe(config.get('stripeKey'));
 
 export default {
+  Query: {
+    order: async (parent, args) => {
+      const order = await sanity.fetch(
+        '*[_type == "order" && orderId == $orderId][0] {"id": _id, ...}',
+        { orderId: args.orderId },
+      );
+
+      return order;
+    },
+  },
   Mutation: {
     verifyCard: async (parent, args) => {
       const { input } = args;
@@ -30,11 +39,10 @@ export default {
       const { input } = args;
 
       // check if customer exists else create it
-      const users = await sanity.fetch(
-        '*[_type == "customer" && email == $email] {_id, email}',
+      let user = await sanity.fetch(
+        '*[_type == "customer" && email == $email][0] {"id": _id, ...}',
         { email: input.customer.email.toLowerCase() },
       );
-      let user = first(users);
       if (!user) {
         // user does not exists, so create a new user
         const doc = {
@@ -119,11 +127,10 @@ export default {
       return { id: order._id, ...order };
     },
     validateCoupon: async (parent, args) => {
-      const coupons = await sanity.fetch(
-        '*[_type == "coupon" && code == $code] {email, password}',
+      const coupon = await sanity.fetch(
+        '*[_type == "coupon" && code == $code][0] {"id": _id, ...}',
         { code: args.code },
       );
-      const coupon = first(coupons);
       if (!coupon) {
         throw new Error('Invalid coupon.');
       }
