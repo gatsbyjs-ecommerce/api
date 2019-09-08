@@ -3,25 +3,27 @@ import async from 'async';
 import { first } from 'lodash';
 
 import sanity from '../utils/sanity';
-// import { getEntry, getEntries, createEntry } from '../utils/contentful';
 
 import config from '../utils/config';
 
 export default {
-  Query: {
-    hello: () => 'Hello world!',
-  },
   Mutation: {
     createOrder: async (parent, args) => {
       // get products
+      const { input } = args;
+
       const totalCost = await new Promise(resolve => {
-        const total = 0;
+        let total = 0;
         async.each(
-          args.productIds,
+          input.productIds,
           async (productId, callback) => {
-            // TODO:
-            // const product = await getEntry(productId);
-            // total += product.discountPrice;
+            const product = await sanity.getDocument(productId);
+            if (product) {
+              total +=
+                product.variant.discountPrice > 0
+                  ? product.variant.discountPrice
+                  : product.variant.price;
+            }
             callback();
           },
           () => {
@@ -29,6 +31,7 @@ export default {
           },
         );
       });
+      input.total = totalCost.toString();
 
       // process payment with stripe
       const stripe = new Stripe(config.get('stripeKey'));
@@ -36,42 +39,45 @@ export default {
         const charge = await stripe.charges.create({
           amount: `${totalCost}00`,
           currency: 'gbp',
-          description: `Order by ${args.customerEmail} for SejalSuits`,
-          source: args.tokenId,
-          receipt_email: args.customerEmail,
+          description: `Order by ${input.customerEmail} for SejalSuits`,
+          source: input.tokenId,
+          receipt_email: input.customerEmail,
         });
         // console.log('charge', charge);
-        args.stripeId = charge.id;
-        args.status = charge.status;
-        args.total = totalCost.toString();
+        input.stripeId = charge.id;
+        input.status = charge.status;
       } catch (error) {
-        console.error('payment error', error);
-        throw new Error('Payment failed.');
+        // console.error('payment error', error);
+        throw new Error(`Payment failed: ${error.message}`);
       }
 
       // add to db
       // send array of products
-      if (args.productIds) {
-        args.products = args.productIds.map(item => ({
-          sys: {
-            type: 'Link',
-            linkType: 'Entry',
-            id: item,
-          },
+      if (input.productIds) {
+        input.products = input.productIds.map(item => ({
+          _type: 'reference',
+          _key: item,
+          _ref: item,
         }));
       }
+      delete input.tokenId;
+      delete input.productIds;
 
-      delete args.tokenId;
-      delete args.productIds;
-      // TODO:
-      // const order = await createEntry(args, 'order');
-      const order = {};
-      return order;
+      // insert order
+      const doc = {
+        _type: 'order',
+        ...input,
+        total: parseFloat(input.total),
+      };
+      const order = await sanity.create(doc);
+
+      return { id: order._id, ...order };
     },
     validateCoupon: async (parent, args) => {
-      // TODO:
-      // const coupons = await getEntries('coupons', { 'fields.code': args.code });
-      const coupons = [];
+      const coupons = await sanity.fetch(
+        '*[_type == "coupon" && code == $code] {email, password}',
+        { code: args.code },
+      );
       const coupon = first(coupons);
       if (!coupon) {
         throw new Error('Invalid coupon.');

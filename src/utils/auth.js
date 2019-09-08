@@ -22,7 +22,7 @@ export const isAuthenticated = async req => {
 
 export function generateToken(user) {
   const jwtToken = jwt.sign(
-    { id: user.id || user.entryId, email: user.email },
+    { id: user._id, email: user.email },
     conf.get('jwtSecret'),
   );
   return `JWT ${jwtToken}`;

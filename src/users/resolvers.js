@@ -2,10 +2,9 @@ import { isEmpty, head } from 'lodash';
 import randomstring from 'randomstring';
 
 import { generateToken, hashPassword, comparePassword } from '../utils/auth';
-import User from './database';
 import mailer, { renderTemplate } from '../utils/mailer';
 import config from '../utils/config';
-import { getEntry, createEntry, getEntries } from '../utils/contentful';
+import sanity from '../utils/sanity';
 
 export default {
   Query: {
@@ -14,7 +13,7 @@ export default {
         throw new Error('Not logged in');
       }
 
-      const user = await getEntry(ctx.user.id);
+      const user = await sanity.getDocument(ctx.user.id);
       return user;
     },
   },
@@ -22,9 +21,11 @@ export default {
     register: async (root, args) => {
       const { email, password } = args.input;
 
-      const users = await getEntries('user', {
-        'fields.email[match]': email.toLowerCase(),
-      });
+      // check if user already exists
+      const users = await sanity.fetch(
+        '*[_type == "customer" && email == $email] {email, password}',
+        { email: email.toLowerCase() },
+      );
       let user = head(users);
 
       if (user) {
@@ -32,7 +33,16 @@ export default {
       }
 
       const hashedPassword = await hashPassword(password);
-      user = await createEntry({ email, password: hashedPassword }, 'user');
+
+      // create customer
+
+      const doc = {
+        _type: 'customer',
+        email,
+        password: hashedPassword,
+        status: 'active',
+      };
+      user = await sanity.create(doc);
 
       // send welcome email
       // const [html, subject] = await renderTemplate('welcome', {
@@ -47,13 +57,16 @@ export default {
       // await mailer.sendMail(mailOptions);
 
       const token = generateToken(user);
-      return { user, jwt: token };
+      return { user: { ...user, id: user._id }, jwt: token };
     },
     login: async (root, args) => {
       const { email, password } = args.input;
-      const users = await getEntries('user', {
-        'fields.email[match]': email.toLowerCase(),
-      });
+
+      // check if user  exists
+      const users = await sanity.fetch(
+        '*[_type == "customer" && email == $email] {_id, email, password}',
+        { email: email.toLowerCase() },
+      );
       const user = head(users);
 
       if (!user) {
@@ -65,7 +78,7 @@ export default {
       }
 
       const token = generateToken(user);
-      return { user: { ...user, id: user.id || user.entryId }, jwt: token };
+      return { user: { ...user, id: user._id }, jwt: token };
     },
     updateMe: async (root, { input }, ctx) => {
       if (!ctx.user) {
@@ -82,16 +95,20 @@ export default {
 
       // if user obj not empty
       if (!isEmpty(objUpdate)) {
-        await User.updateOne(objFind, objUpdate);
+        // TODO:
+        // await User.updateOne(objFind, objUpdate);
       }
 
-      return User.findOne({ _id: ctx.user.id });
+      // TODO:
+      return {};
+      // return User.findOne({ _id: ctx.user.id });
     },
     forgotPassword: async (root, { input }) => {
       const resetPasswordToken = randomstring.generate();
       const webAppUrl = config.get('webAppUrl');
 
-      await User.updateOne({ email: input.email }, { resetPasswordToken });
+      // TODO:
+      // await User.updateOne({ email: input.email }, { resetPasswordToken });
 
       const [html, subject] = await renderTemplate('forgot-password', {
         resetPasswordLink: `${webAppUrl}/set-password/${resetPasswordToken}`,
@@ -107,7 +124,9 @@ export default {
       return { success: true };
     },
     setNewPassword: async (root, { input }) => {
-      const user = await User.findOne({ resetPasswordToken: input.token });
+      // TODO:
+      const user = {};
+      // const user = await User.findOne({ resetPasswordToken: input.token });
 
       if (!user) {
         throw new Error('Invalid password reset token provided.');
