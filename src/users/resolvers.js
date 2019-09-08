@@ -42,6 +42,7 @@ export default {
         status: 'active',
       };
       user = await sanity.create(doc);
+      user.id = user._id;
 
       // send welcome email
       // const [html, subject] = await renderTemplate('welcome', {
@@ -56,7 +57,7 @@ export default {
       // await mailer.sendMail(mailOptions);
 
       const token = generateToken(user);
-      return { user: { ...user, id: user._id }, jwt: token };
+      return { user, jwt: token };
     },
     login: async (root, args) => {
       const { email, password } = args.input;
@@ -76,7 +77,7 @@ export default {
       }
 
       const token = generateToken(user);
-      return { user: { ...user, id: user._id }, jwt: token };
+      return { user, jwt: token };
     },
     updateMe: async (root, { input }, ctx) => {
       if (!ctx.user) {

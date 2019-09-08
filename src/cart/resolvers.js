@@ -61,8 +61,8 @@ export default {
 
       input.customer = {
         _type: 'reference',
-        _key: user._id,
-        _ref: user._id,
+        _key: user.id,
+        _ref: user.id,
       };
 
       const totalCost = await new Promise(resolve => {
@@ -89,13 +89,15 @@ export default {
 
       // process payment with stripe
       try {
-        const charge = await stripe.charges.create({
+        const paymentData = {
           amount: `${totalCost}00`,
           currency: 'gbp',
           description: `Order by ${input.customerEmail} for SejalSuits`,
           source: input.tokenId,
           receipt_email: input.customerEmail,
-        });
+        };
+        // console.log('paymentData', paymentData);
+        const charge = await stripe.charges.create(paymentData);
         // console.log('charge', charge);
         input.paymentId = charge.id;
         input.status = charge.status === 'succeeded' ? 'paid' : 'failed';
