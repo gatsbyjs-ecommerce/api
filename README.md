@@ -3,6 +3,7 @@
 > A ecommerce API built with Apollo GraphQL Server
 
 #### Requirements
+
 ```bash
 - Node >=v10.16.0
 - NPM >=v6.9.0
@@ -10,6 +11,7 @@
 ```
 
 #### Features
+
 ```bash
 - Apollo Graphql
 - User Authorisation (Login, Register, Reset Password, Update User)
@@ -33,7 +35,5 @@
 
 ### Scripts
 
-- `yarn start` - simply starts the server
 - `yarn dev` - starts the server in dev mode with hot-reloading
-- `yarn build` - build code using babel
 - `yarn lint` - lints all the files in `src/` folder
