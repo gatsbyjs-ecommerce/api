@@ -8,7 +8,7 @@ dotenv.config();
 const conf = convict({
   siteName: {
     doc: 'Site name.',
-    default: 'Sejal Suits',
+    default: 'GatsbyJS Ecommerce',
     env: 'SITE_NAME',
   },
   env: {
@@ -38,7 +38,7 @@ const conf = convict({
   jwtSecret: {
     doc: 'JWT secret.',
     format: String,
-    default: 'MY_SITE_SECRET',
+    default: 'abcabc123',
     env: 'JWTSECRET',
   },
   mailer: {
@@ -57,7 +57,7 @@ const conf = convict({
     projectId: {
       doc: 'Sanity Project ID.',
       format: String,
-      default: '',
+      default: '2jkk6tlv',
       env: 'SANITY_PROJECT_ID',
     },
     token: {
@@ -69,22 +69,8 @@ const conf = convict({
     dataset: {
       doc: 'Sanity dataset.',
       format: String,
-      default: '',
+      default: 'production',
       env: 'SANITY_DATASET',
-    },
-  },
-  mailchimp: {
-    key: {
-      doc: 'mailchimp key',
-      format: String,
-      default: '',
-      env: 'MAILCHIMP_KEY',
-    },
-    list: {
-      doc: 'mailchimp list',
-      format: String,
-      default: '',
-      env: 'MAILCHIMP_LIST',
     },
   },
   stripeKey: {
@@ -92,6 +78,34 @@ const conf = convict({
     format: String,
     default: '',
     env: 'STRIPE_KEY',
+  },
+  razorpay: {
+    id: {
+      doc: 'Razorpay ID',
+      format: String,
+      default: '',
+      env: 'RAZORPAY_ID',
+    },
+    secret: {
+      doc: 'Razorpay Secret',
+      format: String,
+      default: '',
+      env: 'RAZORPAY_SECRET',
+    },
+  },
+  telegram: {
+    url: {
+      doc: 'Telegram bot URL key',
+      format: String,
+      default: '',
+      env: 'TELEGRAM_BOT',
+    },
+    chatId: {
+      doc: 'Telegram ChatID',
+      format: String,
+      default: '',
+      env: 'TELEGRAM_CHAT_ID',
+    },
   },
 });
 

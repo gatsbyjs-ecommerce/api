@@ -1,4 +1,3 @@
-import Mailchimp from 'mailchimp-api-v3';
 import mailer from '../utils/mailer';
 import config from '../utils/config';
 
@@ -7,16 +6,6 @@ export default {
     hello: () => 'Hello world!',
   },
   Mutation: {
-    subscribe: async (parent, args) => {
-      const mailchimp = new Mailchimp(config.get('mailchimp.key'));
-      const list = config.get('mailchimp.list');
-      await mailchimp.post(`/lists/${list}/members`, {
-        email_address: args.email,
-        status: 'subscribed',
-      });
-
-      return args;
-    },
     contact: async (parent, args) => {
       const { name, email, message } = args;
 
@@ -31,7 +20,7 @@ export default {
         await mailer.sendMail(mailOptions);
         return {
           status: 'success',
-          message: 'Contact informaton sent successfully',
+          message: 'Contact information sent successfully',
         };
       } catch (err) {
         return { status: 'error', message: err.message };

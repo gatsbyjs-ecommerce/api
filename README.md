@@ -1,6 +1,6 @@
-## `ecommerce-api`
+## `gatsby-e-commerce-api`
 
-> A ecommerce API built with Apollo GraphQL Server
+> A e-commerce API built with Apollo GraphQL Server
 
 #### Requirements
 

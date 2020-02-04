@@ -1,5 +1,5 @@
 {
-  "name": "e-commerce-api",
+  "name": "gatsby-e-commerce-api",
   "version": 2,
   "env": {
     "NODE_ENV": "development"

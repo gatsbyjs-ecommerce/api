@@ -10,7 +10,6 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    subscribe(email: String!): Subscriber
     contact(email: String!, name: String!, message: String!): Subscriber
   }
 `;

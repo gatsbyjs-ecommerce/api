@@ -12,6 +12,8 @@ const typeDefs = gql`
     id: ID!
     product: [Product!]!
     orderId: String!
+    paymentId: String
+    total: Int
     createTime: String
     customer: User!
     customerNotes: String
@@ -38,12 +40,28 @@ const typeDefs = gql`
     cvc: String!
   }
 
+  input OrderProductInput {
+    id: ID!
+    sku: String!
+    device: String!
+  }
+
   input OrderInput {
+    id: String
     tokenId: String!
     orderId: String!
-    productIds: [String!]!
+    products: [OrderProductInput!]!
     customer: UserInput!
     customerNotes: String
+    status: String
+    discount: Int
+    country: String
+    currencyCode: String
+  }
+
+  input OrderUpdateInput {
+    orderId: String
+    status: String
   }
 
   type Query {
@@ -52,7 +70,8 @@ const typeDefs = gql`
 
   type Mutation {
     verifyCard(input: VerifyCardInput!): CardToken
-    createOrder(input: OrderInput!): Order
+    createOrder(input: OrderInput!, gateway: String): Order
+    updateOrder(input: OrderUpdateInput!): Order
     validateCoupon(code: String!): Coupon
   }
 `;
