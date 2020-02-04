@@ -83,13 +83,13 @@ const conf = convict({
     id: {
       doc: 'Razorpay ID',
       format: String,
-      default: '',
+      default: 'key-here',
       env: 'RAZORPAY_ID',
     },
     secret: {
       doc: 'Razorpay Secret',
       format: String,
-      default: '',
+      default: 'secret-here',
       env: 'RAZORPAY_SECRET',
     },
   },
