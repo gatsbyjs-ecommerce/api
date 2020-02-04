@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "micro-dev src --port 4000 --silent",
     "lint": "eslint --fix --ext .jsx,.js src/*.js src/**/*.js src/**/**/*.js",
+    "now-dev": "micro-dev src --port $PORT --silent",
     "deploy": "now --prod"
   },
   "keywords": [],
