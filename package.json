@@ -1,5 +1,5 @@
 {
-  "name": "gatsby-e-commerce-api",
+  "name": "api",
   "version": "1.0.0",
   "description": "A e-commerce API built with Apollo GraphQL and Sanity.io",
   "main": "src/index.js",
